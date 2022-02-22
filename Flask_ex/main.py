@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_file
 from scrapper import get_jobs
+from export_csv import save_to_file
 
 app = Flask("SuperScrapper")
 
@@ -12,6 +13,7 @@ def hello():
 
 @app.route("/report")
 def report():
+    # URL에서 입력한 것을 추출한다. ?뒤의 word에 해당하는 부분.
     word = request.args.get('word')
 
     # 유저가 아무것도 입력 안했을땐 word가 None이 된다.
@@ -32,5 +34,23 @@ def report():
     return render_template("report.html",sesBy=word,\
                                          resultsNumber=len(jobs),\
                                          jobs=jobs)
+
+@app.route("/export")
+def export():
+    # try block에서 어떤 종류의 에러든 일어나면 except 로 처리
+    try:
+        word = request.args.get('word')
+        if not word: # word가 없다면 예외처리
+            raise Exception
+
+        word = word.lower()
+        jobs = db.get(word)
+
+        if not jobs: # jobs가 db에 없다면 예외처리
+            raise Exception
+        save_to_file(jobs)
+        return send_file("jobs.csv")
+    except:
+        return redirect("/") # 홈으로 redirect
 
 app.run()

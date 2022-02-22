@@ -13,20 +13,17 @@
         <body>
            <h1>Search results</h1>
            <h3>Found {{resultsNumber}} results for: {{sesBy}}</h3>
+           <a href="/export?word={{sesBy}}">Export to CSV</a>
            <section>
                <h4>Title</h4>
                <h4>Company</h4>
                <h4>Location</h4>
                <h4>Link</h4>
-               
-                <!-- flask 에선 html에서 for ~ in 구문의 적용이 가능 -->
-                <!-- 파이썬 코드를 html에서 치고자 할 땐 아래와 같이 {%%} 로 감싸고 {% endfor %} 로 맺는다. -->
-                <!-- {{}}는 값을 보여주기 위함 --> 
+                
                {% for job in jobs %}
                     <span>{{job.title}}</span>
                     <span>{{job.company}}</span>
                     <span>{{job.location}}</span>
-                <!-- link의 경우엔 너무 길어져서 앵커를 아래와 같이 넣어줬다. -->
                     <a href="{{job.apply_link}}" target="_blank">Apply</a>
                {% endfor %}
            </section>
